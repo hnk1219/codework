@@ -1,0 +1,13 @@
+﻿<TablacusExplorer Format="0" XP="0"><Item Filter="D:\*" Type="JScript">FV.SetViewMode(4,16);
+FV.Columns='"名前" 272 "更新日時" 144 "種類" 120 "サイズ" 80 "大きさ" 160';
+FV.GroupBy='System.Null';
+FV.SortColumn='-更新日時';
+</Item><Item Filter="Y:\*" Type="JScript">FV.SetViewMode(4,16);
+FV.Columns='"名前" 272 "更新日時" 144 "種類" 120 "サイズ" 80 "大きさ" 160';
+FV.GroupBy='System.Null';
+FV.SortColumn='-更新日時';
+</Item><Item Filter="\\CHACHASTUDIO\Project\*" Type="JScript">FV.SetViewMode(4,16);
+FV.Columns='"名前" 272 "更新日時" 144 "種類" 120 "サイズ" 80 "大きさ" 160';
+FV.GroupBy='System.Null';
+FV.SortColumn='-更新日時';
+</Item></TablacusExplorer>

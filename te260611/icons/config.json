@@ -1,0 +1,18 @@
+{
+  "info": {
+    "name": {
+      "en": "Tablacus Dark"
+    },
+    "descprition": {
+      "en": "Default icons for dark/night themes"
+    },
+    "creator": {
+      "en": "Duarte Farrajota Ramos"
+    },
+    "id": "Tablacus_Dark",
+    "version": "0.04",
+    "pubDate" : "Mon, 01 Mar 2021 15:47:00 GMT",
+    "license": "MIT License",
+    "URL": "https://duarteramos.pt"
+  }  
+}
