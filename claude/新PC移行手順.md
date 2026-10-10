@@ -69,6 +69,14 @@ Claudeはこの文書を上から順に実行し、各ステップの結果を�
 - `compass-10th-anniversary-ticket` (2026-10-02 の発売リマインド。期日が過ぎていれば登録不要としてユーザーに確認)
 - `minou-sabo-yakiimo-start` (2026-09-16 の催事リマインド。期日が過ぎていれば登録不要としてユーザーに確認)
 
+### 7.5 Tablacus Explorer の復元
+- `D:\codeWork\te260611` は `.gitignore` で除外されており、Gitにはない。cloneしても入らない。
+- バックアップの `G:\マイドライブ\PC移行バックアップ_20261010\te260611\` を `D:\codeWork\te260611\` へコピーする(約3MB)。
+  - `config\` に設定(menus.xml、key.xml、addons.xml、window.xml など)、`addons\` にアドオンが入っている。
+  - 既に `D:\codeWork\te260611` が存在する場合は、上書き前にユーザーへ確認する。
+- コピー後、`D:\codeWork\te260611\TE64.exe` を起動し、タブ・キー設定・アドオンが旧PC通りか確認してもらう。
+- 旧PCで移行直前にTablacusを終了して `config\` を再コピーした場合は、そちらが最新。
+
 ### 8. MCP・拡張・その他
 - Claude in Chrome拡張、MCPコネクタ(Google系など)は新PCで再接続が必要。ユーザーに案内する。
 - `.claude.json` と `.credentials.json` は意図的にバックアップしていない。ログインで再生成される。
