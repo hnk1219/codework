@@ -1,0 +1,110 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>語彙力フラッシュカード</title>
+<style>
+:root{--bg:#f5f6f8;--card:#fff;--text:#1d2330;--sub:#5b6475;--accent:#2f6fed;--back:#eef4ff;--ok:#1f9d55;--ng:#d64545;--line:#d8dce5}
+@media (prefers-color-scheme:dark){:root{--bg:#14171d;--card:#1e232c;--text:#eef0f4;--sub:#a0a8b8;--accent:#6b9bff;--back:#1f2a3f;--ok:#4cc27f;--ng:#ef7070;--line:#323946}}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--text);font-family:"Yu Gothic UI","Meiryo",sans-serif;display:flex;justify-content:center}
+main{width:100%;max-width:640px;padding:20px 16px 40px}
+h1{font-size:18px;margin:0 0 4px}
+.src{font-size:12px;color:var(--sub);margin-bottom:14px}
+.bar{display:flex;justify-content:space-between;align-items:center;font-size:13px;color:var(--sub);margin-bottom:8px}
+.prog{height:6px;background:var(--line);border-radius:3px;overflow:hidden;margin-bottom:14px}
+.prog div{height:100%;background:var(--accent);width:0;transition:width .2s}
+.scene{perspective:1200px;height:300px;cursor:pointer}
+.card{position:relative;width:100%;height:100%;transition:transform .45s;transform-style:preserve-3d}
+.card.flip{transform:rotateY(180deg)}
+.face{position:absolute;inset:0;backface-visibility:hidden;background:var(--card);border:1px solid var(--line);border-radius:14px;padding:24px;display:flex;flex-direction:column;justify-content:center;align-items:center;text-align:center;overflow:auto}
+.face.b{transform:rotateY(180deg);background:var(--back)}
+.tag{position:absolute;top:12px;left:16px;font-size:12px;color:var(--accent)}
+.q{font-size:21px;font-weight:700;line-height:1.5}
+.a{font-size:16px;line-height:1.8;text-align:left;white-space:pre-line}
+.hint{position:absolute;bottom:10px;font-size:11px;color:var(--sub)}
+.btns{display:flex;gap:8px;margin-top:14px;flex-wrap:wrap}
+button{flex:1;min-width:90px;padding:11px 8px;border-radius:10px;border:1px solid var(--line);background:var(--card);color:var(--text);font-size:14px;cursor:pointer;font-family:inherit}
+button:hover{border-color:var(--accent)}
+button.ok{color:var(--ok);border-color:var(--ok)}
+button.ng{color:var(--ng);border-color:var(--ng)}
+.done{text-align:center;padding:40px 10px;line-height:2}
+.keys{font-size:11px;color:var(--sub);margin-top:14px;text-align:center}
+</style>
+</head>
+<body>
+<main>
+<h1>語彙力フラッシュカード</h1>
+<div class="src">出典: 【コミュ力UP】舐められない語彙力のつけ方 (Dラボ)</div>
+<div class="bar"><span id="pos"></span><span id="stat"></span></div>
+<div class="prog"><div id="pg"></div></div>
+<div id="view"></div>
+<div class="btns">
+<button id="prev">前へ</button>
+<button id="ng" class="ng">もう一度</button>
+<button id="ok" class="ok">覚えた</button>
+<button id="next">次へ</button>
+<button id="shuffle">シャッフル</button>
+<button id="reset">最初から</button>
+</div>
+<div class="keys">Space: めくる / 左右キー: 移動 / 1: もう一度 / 2: 覚えた</div>
+</main>
+<script>
+const CARDS=[
+["語彙力が高いと得られる効果は?","コミュニケーション能力が上がる\n学習スピードが早くなる\n目の前の状況をより細かく分析できる"],
+["語彙が少ない人の問題点は?","最高と最悪のような少ない言葉に無理に当てはめて、分かったつもりになる。\n結果として表現・人間関係の理解・人生の捉え方に深みがなくなる。"],
+["語彙力とメンタルの関係は?","感情や状況を表す言葉のバリエーションが多いほど、うつ的になりにくくメンタルが安定する。\n例: 最悪の中に「悲しい」「怒り」「価値あるしんどさ」を区別できる。"],
+["偶発的学習とは?","読書中に出会った単語の約15%は、辞書を引かなくても文脈から意味を学んでいる、という現象。\n単語帳より文章の中で覚える方が、使える語彙になる。"],
+["ビジネス書ばかり読むと語彙面でどうなりやすい?","PDCAなどの横文字を文脈なしで単独で覚えるため、使い方が変になったり、やたら横文字を使いたがる人になりやすい。"],
+["新しい単語に出会ったとき、調べて終わりにしてはいけない理由は?","使う場面を考える・人に教える・過去の体験を表現し直す、といった思い出す練習(検索練習)をしないと定着しないから。"],
+["検索練習(思い出す練習)とは?","覚えた言葉をどんな時に使えるか考える、実際に使う、思い出す練習のこと。語彙の定着に有効とされる。"],
+["プロダクション効果とは?","声に出して読むことで記憶保持率が向上する効果。\n見たことのない単語は声に出し、例文を作ったり例え話で言い換えると良い。"],
+["語彙を定着させる反復のタイミングは?","1日後、1週間後、1ヶ月後と間隔をあけて、もう一度触れる。\n例: 今日覚えた単語をメモ → 寝る前に見る → 週末に見る → 1ヶ月後に見る。"],
+["アクションプラン1: 毎日10分間読書","ジャンルは何でも良い(小説・ブログ・ビジネス書など)。\n1日数ページでも年間で数十万字に触れられる。\n「1冊読まなきゃ」ではなく「10分だけ」「1章だけ」と考える。\n朝起きた後や寝る前がおすすめ。"],
+["アクションプラン2: 知らない単語は必ずメモする","スマホのメモ帳でも紙でも良い。\n意味を調べ、自分なりの例文を作る(使う場面を想像する)。\n「知ったつもり」を防ぎ、使わない知識が消えるのを防ぐ。"],
+["例え話を作ると覚えやすい理由と例は?","自分の身近な事柄に結びつけると脳への入り方が変わる。\n例: PDCA(Plan-Do-Check-Action)を料理に例える\nレシピを考える → 作る → 味見する → 塩や酢で調整する。"],
+["アクションプラン3: フラッシュカードを作る","面白い言葉を単語帳アプリやメモに入れて、定期的に復習する。\n忘れかけた頃にもう一度触れるのが大事。5分の隙間時間で使える。\n知らない言葉が多かった本は、1・2・6ヶ月後に読み返すのも有効。"],
+["レコメンドに頼ると語彙が増えにくいのはなぜ?","SNSや動画のレコメンドだと、自分の知っている言葉にしか触れなくなり、語彙が増えにくい。\n普段読まない本や人にすすめられた本を読んで、知らない言葉に意図的に触れる。"],
+["アクションプラン4: 声に出してみる","発音する、友達に「最近こんな単語を見たんだけど」と話す、人に教える。\n実際に使う・人に教えるだけで記憶の定着率が上がる。"],
+["アクションプラン5: 関連付けて覚える","関連語・由来・類語・フォーマルとカジュアルの言い方などを一緒に調べる。\n情報が関連して増えるほど記憶のネットワークが強化され、思い出しやすくなる(ヒントが増える)。\nChatGPTに聞くのも有効。"],
+["なぜ意味のない情報は覚えにくい?(マジックナンバー7)","無意味な数字の羅列は7桁ほどが限界と言われる。\n意味のあるつながりを作ることが記憶には重要。"],
+["動画の5つのアクションプランは?","1. 毎日10分間読書する\n2. 知らない単語は必ずメモする(意味・例文)\n3. フラッシュカードを作る\n4. 声に出す・人に使う\n5. 関連付けて覚える"]
+];
+let order=[...CARDS.keys()],i=0,flipped=false,known=new Set();
+const $=id=>document.getElementById(id);
+function render(){
+  const v=$('view');
+  if(!order.length){v.innerHTML='<div class="done">全てのカードを覚えました。<br>「最初から」で復習できます。</div>';$('pos').textContent='';$('stat').textContent='覚えた '+known.size+' / '+CARDS.length;$('pg').style.width='100%';return;}
+  if(i>=order.length)i=0;if(i<0)i=order.length-1;
+  const c=CARDS[order[i]];
+  v.innerHTML='<div class="scene" id="scene"><div class="card'+(flipped?' flip':'')+'" id="card"><div class="face"><span class="tag">問題</span><div class="q"></div><span class="hint">クリックでめくる</span></div><div class="face b"><span class="tag">答え</span><div class="a"></div></div></div></div>';
+  v.querySelector('.q').textContent=c[0];v.querySelector('.a').textContent=c[1];
+  $('scene').onclick=flip;
+  $('pos').textContent=(i+1)+' / '+order.length;
+  $('stat').textContent='覚えた '+known.size+' / '+CARDS.length;
+  $('pg').style.width=(known.size/CARDS.length*100)+'%';
+}
+function flip(){flipped=!flipped;const c=$('card');if(c)c.classList.toggle('flip',flipped);}
+function go(d){flipped=false;i+=d;render();}
+function mark(ok){
+  if(!order.length)return;
+  flipped=false;
+  if(ok){known.add(order[i]);order.splice(i,1);}else{i++;}
+  render();
+}
+$('prev').onclick=()=>go(-1);$('next').onclick=()=>go(1);
+$('ok').onclick=()=>mark(true);$('ng').onclick=()=>mark(false);
+$('shuffle').onclick=()=>{for(let k=order.length-1;k>0;k--){const j=Math.floor(Math.random()*(k+1));[order[k],order[j]]=[order[j],order[k]];}i=0;flipped=false;render();};
+$('reset').onclick=()=>{order=[...CARDS.keys()];known=new Set();i=0;flipped=false;render();};
+document.addEventListener('keydown',e=>{
+  if(e.key===' '){e.preventDefault();flip();}
+  else if(e.key==='ArrowRight')go(1);
+  else if(e.key==='ArrowLeft')go(-1);
+  else if(e.key==='1')mark(false);
+  else if(e.key==='2')mark(true);
+});
+render();
+</script>
+</body>
+</html>
